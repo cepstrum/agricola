@@ -14,7 +14,7 @@ struct resources{
 	int food;
 };
 
-stuct playerBoardVariables{
+struct playerBoardVariables{
 		int rooms;
 		int farmers;
 		int pastures;
@@ -23,29 +23,39 @@ stuct playerBoardVariables{
 		char roomType;
 };
 
-void newRoundBoardResourceReplenish(int *takeOneGrain, int *dayLabourer, int *threeWood, int *oneClay, int *oneReed, int *catchFish){
-	*takeOneGrain = 1;
-	*dayLabourer = 2; 
-	*threeWood += 3;
-	*oneClay += 1;
-	*oneReed += 1;
-	*catchFish +=1;	
+struct boardActionResources{
+	int takeOneGrain;
+	int dayLabourer;
+	int threeWood;
+	int oneClay;
+	int oneReed;
+	int catchFish;
+};
+
+
+void newRoundBoardResourceReplenish(boardActionResources *mainBoard){
+	mainBoard->takeOneGrain = 1;
+	mainBoard->dayLabourer = 2; 
+	mainBoard->threeWood += 3;
+	mainBoard->oneClay += 1;
+	mainBoard->oneReed += 1;
+	mainBoard->catchFish +=1;	
 }
 
-void takeOneGrainF(int *playerTurn,int *player1_grain, int *player2_grain, int *takeOneGrain){
-	if (*playerTurn == 1){
-		*player1_grain += 1;
+void takeOneGrainF(int playerTurn, resources *player1, resources *player2, boardActionResources *mainBoard){
+	if (playerTurn == 1){
+		player1->grain += 1;
 	}
-	else if (*playerTurn == 2){
-		*player2_grain += 1;
+	else if (playerTurn == 2){
+		player2->grain += 1;
 	}
-	*takeOneGrain = 0; 
+	mainBoard->takeOneGrain = 0; 
 }
 
-int makeChoice(int *takeOneGrain, int *dayLabourer, int *threeWood, int *oneClay, int *oneReed, int *catchFish){
+int makeChoice(int playerTurn, boardActionResources *mainBoard, resources *player1, resources *player2){
 	int choice; 
 	cout << "Please make a choice: ";
-	cout << "1. take one grain" << "(" << *takeOneGrain << ") " ;
+	cout << "1. take one grain" << "(" << mainBoard->takeOneGrain << ") " ;
 	cin >> choice;
 	return choice;
 }
@@ -65,13 +75,9 @@ int numberOfPlayers()
 
 int main()
 {
-	//board action resources
-	int takeOneGrain = 1;
-	int dayLabourer = 2; 
-	int threeWood = 3;
-	int oneClay = 1;
-	int oneReed = 1; 
-	int catchFish = 1;
+	boardActionResources mainBoard = {0,0,0,0,0,0};
+	
+	
 	//set whose turn
 	int playerTurn = 1;
 
@@ -85,11 +91,14 @@ int main()
 	playerBoardVariables player2BV = {2,2,0,0,'w'};
 	
 	int choice;
-	choice = makeChoice(&takeOneGrain, &dayLabourer, &threeWood, &oneClay, &oneReed, &catchFish);
+	newRoundBoardResourceReplenish(&mainBoard);
+	cout << player1Resources.grain;
+	choice = makeChoice(playerTurn, &mainBoard, &player1Resources, &player2Resources);
 	if (choice == 1){
-		takeOneGrainF(&playerTurn,&player1_grain, &player2_grain, &takeOneGrain);
+		takeOneGrainF(playerTurn, &player1Resources, &player2Resources, &mainBoard);
 	}
-	makeChoice(&takeOneGrain, &dayLabourer, &threeWood, &oneClay, &oneReed, &catchFish);
+	cout << player1Resources.grain;
+	makeChoice(playerTurn, &mainBoard, &player1Resources, &player2Resources);
 }
 
 
